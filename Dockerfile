@@ -1,28 +1,25 @@
+FROM ubuntu:latest
 
-FROM alpine:latest
+RUN apt-get update -y > /dev/null 2>&1 && apt-get upgrade -y > /dev/null 2>&1 && apt-get install -y locales ssh wget unzip -y > /dev/null 2>&1 && locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
 
-# Update and install dependencies
-RUN apk --no-cache add openssh wget unzip python3
-
-# Set environment variables
 ARG NGROK_TOKEN
 ENV NGROK_TOKEN=${NGROK_TOKEN}
 
-# Install ngrok for tunneling and setup SSH service
-RUN wget -O ngrok.zip https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.zip \
- && unzip ngrok.zip \
- && echo "./ngrok config add-authtoken ${NGROK_TOKEN} && ./ngrok tcp 22 &>/dev/null &" > /kaal.sh \
- && mkdir /run/sshd \
- && echo '/usr/sbin/sshd -D &' >> /kaal.sh \
- && chmod 755 /kaal.sh
+RUN wget -O /ngrok.zip https://bin.equinox.io/c/your-ngrok-token/ngrok-stable-linux-amd64.zip > /dev/null 2>&1
+RUN unzip /ngrok.zip -d /usr/local/bin > /dev/null 2>&1
 
-# Configure SSH
-RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
- && echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
- && echo 'root:kaal' | chpasswd
+RUN echo "/usr/local/bin/ngrok authtoken ${NGROK_TOKEN}" >> /kaal.sh
+RUN echo "/usr/local/bin/ngrok tcp 22 &>/dev/null &" >> /kaal.sh
 
-# Set proper permissions for the script and start SSH service in it
+RUN mkdir /run/sshd
+RUN echo 'PermitRootLogin yes' >>  /etc/ssh/sshd_config 
+RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
+RUN echo root:kaal | chpasswd
 RUN service ssh start
 
-# Set up a basic HTTP server (for health check)
-CMD ["/bin/sh", "-c", "/kaal.sh && python3 -m http.server 80"]
+RUN chmod 755 /kaal.sh
+
+EXPOSE 80 8888 8080 443 5130 5131 5132 5133 5134 5135 3306
+
+CMD ["/bin/bash", "/kaal.sh"]
