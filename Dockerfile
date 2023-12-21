@@ -28,7 +28,7 @@ RUN chmod 755 /kaal.sh \
  && service ssh start
 
 # Expose ngrok's web interface port, and other ports which can be used for tunneling
-EXPOSE 4040 80 8888 8080 443 5130 5131 5132 5133 5134 5135 3306
+EXPOSE 80 
 
 # Set the default command to run the script
 CMD ["/bin/sh", "/kaal.sh"]
