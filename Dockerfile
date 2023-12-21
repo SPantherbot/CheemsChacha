@@ -27,6 +27,11 @@ RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
 RUN chmod 755 /kaal.sh \
  && service ssh start
 
+
+# Install Python and set up a basic HTTP server (for health check)
+RUN apt install -y python3 && \
+    echo 'python3 -m http.server 80 &' >> /kaal.sh
+
 # Expose ngrok's web interface port, and other ports which can be used for tunneling
 EXPOSE 80 
 
