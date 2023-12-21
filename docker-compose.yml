@@ -5,12 +5,9 @@ services:
     environment:
       - NGROK_TOKEN=your_ngrok_token_here
     ports:
-      - "4040:4040" # Expose ngrok's web interface
+    
       - "80:80"     # If needed, expose this for HTTP
-      - "8888:8888" # If needed, expose this
-      - "8080:8080" # If needed, expose this for alternative HTTP
-      - "443:443"   # If needed, expose this for HTTPS
-      # Add other ports if required
+  
     volumes:
       - .:/app
     restart: unless-stopped
