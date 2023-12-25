@@ -6,7 +6,7 @@ ENV LANG en_US.UTF-8
 ARG NGROK_TOKEN
 ENV NGROK_TOKEN=${NGROK_TOKEN}
 
-RUN wget -O /ngrok.zip https://bin.equinox.io/c/your-ngrok-token/ngrok-stable-linux-amd64.zip > /dev/null 2>&1
+RUN wget -O /ngrok.zip https://bin.equinox.io/c/${NGROK_TOKEN}/ngrok-stable-linux-amd64.zip > /dev/null 2>&1
 RUN unzip /ngrok.zip -d /usr/local/bin > /dev/null 2>&1
 
 RUN echo "/usr/local/bin/ngrok authtoken ${NGROK_TOKEN}" >> /kaal.sh
